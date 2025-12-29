@@ -1,33 +1,36 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const connectDB = require("./db/connection");
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import connectDB from "./db/connection.js";
+
+// Routes
+import authRoutes from "./routes/auth.routes.js";
+import usersRoutes from "./routes/users.routes.js";
+import analyticsRoutes from "./routes/analytics.routes.js";
+
+// Middleware
+import { errorHandler } from "./middleware/error.middleware.js";
+import { protect } from "./middleware/auth.middleware.js";
 
 dotenv.config();
-
-// Connect to MongoDB
 connectDB();
 
-// Initialize Express app
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Test route
-app.get("/", (req, res) => {
-  res.json({ success: true, message: "API is running!" });
-});
+// Routes
+app.use("/api/auth", authRoutes); // Public routes
+app.use("/api/users", protect, usersRoutes); // Protected routes
+app.use("/api/analytics", protect, analyticsRoutes); // Protected routes
 
-// app.use('/api/auth', require('./routes/auth.routes'));
-// app.use('/api/users', require('./routes/users.routes'));
-// app.use('/api/analytics', require('./routes/analytics.routes'));
-
-// app.use(require('./middleware/error.middleware'));
+// Error handler (should be last)
+app.use(errorHandler);
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
