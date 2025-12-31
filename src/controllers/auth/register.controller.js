@@ -1,7 +1,7 @@
 import User from "../../models/user.model.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
-
+import { writeLog } from "../../utils/logger.js";
 const registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
@@ -21,6 +21,11 @@ const registerUser = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
+    writeLog("register", "User registered", {
+      userId: user._id,
+      email: user.email,
+      ip: req.ip,
+    });
 
     // Send response with token
     return res

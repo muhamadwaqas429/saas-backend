@@ -1,7 +1,7 @@
 import User from "../../models/user.model.js";
 import jwt from "jsonwebtoken";
 import { ApiResponse } from "../../utils/ApiResponse.js";
-
+import { writeLog } from "../../utils/logger.js";
 const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -18,6 +18,11 @@ const loginUser = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
+    writeLog("login", "User logged in", {
+      userId: user._id,
+      email: user.email,
+      ip: req.ip,
+    });
 
     return res
       .status(200)
