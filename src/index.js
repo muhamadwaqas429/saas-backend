@@ -11,6 +11,7 @@ import analyticsRoutes from "./routes/analytics.routes.js";
 // Middleware
 import { errorHandler } from "./middleware/error.middleware.js";
 import { protect } from "./middleware/auth.middleware.js";
+import menuRoutes from "./routes/menu.routes.js";
 
 dotenv.config();
 connectDB();
@@ -25,7 +26,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes); // Public routes
 app.use("/api/users", protect, usersRoutes); // Protected routes
 app.use("/api/analytics", protect, analyticsRoutes); // Protected routes
-
+app.use("/api/menu", protect, menuRoutes);
 // Error handler (should be last)
 app.use(errorHandler);
 
