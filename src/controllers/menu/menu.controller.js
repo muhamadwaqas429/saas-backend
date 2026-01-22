@@ -149,9 +149,8 @@ export const addOptionChoice = asyncHandler(async (req, res) => {
   option.choices.push(choice._id);
   await option.save();
 
-  const populatedOption = await ItemOption.findById(optionId).populate(
-    "choices"
-  );
+  const populatedOption =
+    await ItemOption.findById(optionId).populate("choices");
 
   io.emit("menu-updated");
 
